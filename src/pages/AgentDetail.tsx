@@ -25,12 +25,19 @@ import {
   Upload,
   Shield,
   Code,
-  Link
+  Link,
+  ChevronDown,
+  ChevronRight,
+  Download,
+  FileText,
+  AlertCircle,
+  CheckCircle
 } from "lucide-react";
 
 export default function AgentDetail() {
   const { id } = useParams();
   const [isActive, setIsActive] = useState(true);
+  const [expandedActivity, setExpandedActivity] = useState<number | null>(null);
   
   // Configuration state
   const [selectedModel, setSelectedModel] = useState("gpt-4");
@@ -68,11 +75,59 @@ export default function AgentDetail() {
   ];
 
   const recentActivity = [
-    { action: "Lead Qualification", timestamp: "2 min ago", status: "Success" },
-    { action: "Email Outreach", timestamp: "15 min ago", status: "Success" },
-    { action: "CRM Update", timestamp: "1 hour ago", status: "Success" },
-    { action: "Lead Scoring", timestamp: "2 hours ago", status: "Failed" },
-    { action: "Data Validation", timestamp: "3 hours ago", status: "Success" }
+    { 
+      action: "Lead Qualification", 
+      timestamp: "2 min ago", 
+      status: "Success",
+      details: "Successfully qualified 5 new leads based on engagement score and company size criteria",
+      logStatus: "Completed",
+      files: [
+        { name: "qualified_leads_report.csv", size: "2.3 KB", url: "#" },
+        { name: "qualification_log.txt", size: "1.1 KB", url: "#" }
+      ]
+    },
+    { 
+      action: "Email Outreach", 
+      timestamp: "15 min ago", 
+      status: "Success",
+      details: "Sent personalized outreach emails to 25 prospects with 98% delivery rate",
+      logStatus: "Completed",
+      files: [
+        { name: "email_campaign_results.json", size: "4.7 KB", url: "#" },
+        { name: "delivery_report.pdf", size: "156 KB", url: "#" }
+      ]
+    },
+    { 
+      action: "CRM Update", 
+      timestamp: "1 hour ago", 
+      status: "Success",
+      details: "Updated 142 contact records with enriched company data and contact preferences",
+      logStatus: "Completed",
+      files: [
+        { name: "crm_update_summary.xlsx", size: "12.8 KB", url: "#" }
+      ]
+    },
+    { 
+      action: "Lead Scoring", 
+      timestamp: "2 hours ago", 
+      status: "Failed",
+      details: "Lead scoring process failed due to API timeout while accessing external data source",
+      logStatus: "Error - Retry scheduled",
+      files: [
+        { name: "error_log.txt", size: "892 B", url: "#" }
+      ]
+    },
+    { 
+      action: "Data Validation", 
+      timestamp: "3 hours ago", 
+      status: "Success",
+      details: "Validated and cleaned 1,247 contact records, removing duplicates and invalid entries",
+      logStatus: "Completed",
+      files: [
+        { name: "validation_results.csv", size: "8.4 KB", url: "#" },
+        { name: "cleaned_contacts.csv", size: "234 KB", url: "#" }
+      ]
+    }
   ];
 
   return (
@@ -222,25 +277,87 @@ export default function AgentDetail() {
             <CardContent>
               <div className="space-y-4">
                 {recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-lg border">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                        <Activity className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <p className="font-medium">{activity.action}</p>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Clock className="h-3 w-3" />
-                          {activity.timestamp}
+                  <div key={index} className="border rounded-lg overflow-hidden">
+                    <div 
+                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => setExpandedActivity(expandedActivity === index ? null : index)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                          <Activity className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="font-medium">{activity.action}</p>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            {activity.timestamp}
+                          </div>
                         </div>
                       </div>
+                      <div className="flex items-center gap-2">
+                        <Badge 
+                          variant={activity.status === "Success" ? "default" : "destructive"}
+                          className={activity.status === "Success" ? "bg-green-100 text-green-800" : ""}
+                        >
+                          {activity.status}
+                        </Badge>
+                        {expandedActivity === index ? (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
                     </div>
-                    <Badge 
-                      variant={activity.status === "Success" ? "default" : "destructive"}
-                      className={activity.status === "Success" ? "bg-green-100 text-green-800" : ""}
-                    >
-                      {activity.status}
-                    </Badge>
+                    
+                    {expandedActivity === index && (
+                      <div className="px-3 pb-3 border-t bg-muted/20">
+                        <div className="pt-3 space-y-4">
+                          {/* Activity Details */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-2">Activity Details</h4>
+                            <p className="text-sm text-muted-foreground">{activity.details}</p>
+                          </div>
+                          
+                          {/* Log Status */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-2">Log Status</h4>
+                            <div className="flex items-center gap-2">
+                              {activity.status === "Success" ? (
+                                <CheckCircle className="h-4 w-4 text-green-600" />
+                              ) : (
+                                <AlertCircle className="h-4 w-4 text-red-600" />
+                              )}
+                              <span className="text-sm">{activity.logStatus}</span>
+                            </div>
+                          </div>
+                          
+                          {/* Downloadable Files */}
+                          {activity.files && activity.files.length > 0 && (
+                            <div>
+                              <h4 className="text-sm font-medium mb-2">Downloadable Files</h4>
+                              <div className="space-y-2">
+                                {activity.files.map((file, fileIndex) => (
+                                  <div key={fileIndex} className="flex items-center justify-between p-2 bg-background rounded border">
+                                    <div className="flex items-center gap-2">
+                                      <FileText className="h-4 w-4 text-muted-foreground" />
+                                      <div>
+                                        <p className="text-sm font-medium">{file.name}</p>
+                                        <p className="text-xs text-muted-foreground">{file.size}</p>
+                                      </div>
+                                    </div>
+                                    <Button size="sm" variant="outline" asChild>
+                                      <a href={file.url} download>
+                                        <Download className="h-3 w-3" />
+                                      </a>
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
