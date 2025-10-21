@@ -5,7 +5,8 @@ import {
   BarChart3, 
   FileText, 
   Settings,
-  Plus
+  Plus,
+  Target
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -24,6 +25,7 @@ import { Button } from "@/components/ui/button";
 const mainNavItems = [
   { title: "Agent Management", url: "/", icon: LayoutDashboard },
   { title: "Agents", url: "/agents", icon: Bot },
+  { title: "ICP Criteria", url: "/icp-criteria", icon: Target },
   { title: "Reports", url: "/reports", icon: BarChart3 },
   { title: "Documentation", url: "/docs", icon: FileText },
   { title: "Settings", url: "/settings", icon: Settings },

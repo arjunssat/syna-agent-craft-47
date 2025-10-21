@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Agents from "./pages/Agents";
 import AgentDetail from "./pages/AgentDetail";
 import AgentCreate from "./pages/AgentCreate";
+import ICPCriteria from "./pages/ICPCriteria";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/agents" element={<Agents />} />
             <Route path="/agents/new" element={<AgentCreate />} />
             <Route path="/agents/:id" element={<AgentDetail />} />
+            <Route path="/icp-criteria" element={<ICPCriteria />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
