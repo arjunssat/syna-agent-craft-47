@@ -40,6 +40,8 @@ export default function Settings() {
   const [inAppAlerts, setInAppAlerts] = useState(true);
   
   // Default agent settings
+  const [defaultModel, setDefaultModel] = useState("openai");
+  const [defaultApiKey, setDefaultApiKey] = useState("");
   const [defaultTemperature, setDefaultTemperature] = useState([0.7]);
   const [defaultMaxTokens, setDefaultMaxTokens] = useState("2048");
   const [executionTimeLimit, setExecutionTimeLimit] = useState("300");
@@ -330,6 +332,33 @@ export default function Settings() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="default-model">Model</Label>
+                  <Select value={defaultModel} onValueChange={setDefaultModel}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="openai">OpenAI</SelectItem>
+                      <SelectItem value="gemini">Gemini</SelectItem>
+                      <SelectItem value="llama">Llama</SelectItem>
+                      <SelectItem value="claude">Claude</SelectItem>
+                      <SelectItem value="mistral">Mistral</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="default-api-key">API Key</Label>
+                  <Input
+                    id="default-api-key"
+                    type="password"
+                    value={defaultApiKey}
+                    onChange={(e) => setDefaultApiKey(e.target.value)}
+                    placeholder="Enter API key"
+                  />
+                </div>
+
                 <div className="space-y-2">
                   <Label>Default Temperature: {defaultTemperature[0]}</Label>
                   <p className="text-xs text-muted-foreground">Controls creativity vs accuracy for new agents</p>
