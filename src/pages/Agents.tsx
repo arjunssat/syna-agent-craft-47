@@ -15,8 +15,10 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Bot, 
   Plus, 
@@ -33,6 +35,8 @@ import { NavLink } from "react-router-dom";
 
 export default function Agents() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const agents = [
     {
@@ -83,6 +87,14 @@ export default function Agents() {
       : <Badge variant="secondary">Paused</Badge>;
   };
 
+  // Filter agents based on type and status
+  const filteredAgents = agents.filter(agent => {
+    const matchesType = typeFilter === "all" || agent.type === typeFilter;
+    const matchesStatus = statusFilter === "all" || agent.status === statusFilter;
+    const matchesSearch = agent.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesType && matchesStatus && matchesSearch;
+  });
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -113,10 +125,29 @@ export default function Agents() {
                   className="pl-10"
                 />
               </div>
-              <Button variant="outline">
-                <Filter className="h-4 w-4" />
-                Filter
-              </Button>
+              <div className="flex items-center gap-2">
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Agent Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="Sales">Sales</SelectItem>
+                    <SelectItem value="Support">Support</SelectItem>
+                    <SelectItem value="Analytics">Analytics</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Paused">Paused</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -142,7 +173,7 @@ export default function Agents() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {agents.map((agent) => (
+              {filteredAgents.map((agent) => (
                 <TableRow key={agent.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
